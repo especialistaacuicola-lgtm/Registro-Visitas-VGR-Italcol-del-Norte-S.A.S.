@@ -170,7 +170,7 @@ document.addEventListener('DOMContentLoaded', () => {
             tag.className = 'client-tag'; // Reuse styling
             tag.innerHTML = `
                 <span>${actName}</span>
-                <button type="button" class="btn-remove-act" data-index="${index}">&times;</button>
+                <button type="button" class="btn-remove" data-index="${index}">&times;</button>
             `;
             actividadesTagsContainer.appendChild(tag);
         });
@@ -207,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Remove Activity Tag Event
     actividadesTagsContainer.addEventListener('click', (e) => {
-        if (e.target.classList.contains('btn-remove-act')) {
+        if (e.target.classList.contains('btn-remove')) {
             const index = parseInt(e.target.getAttribute('data-index'), 10);
             selectedActivities.splice(index, 1);
             updateActivityMetadata();
