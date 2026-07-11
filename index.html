@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Diario de Visitas Comerciales</title>
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="header-section">
+        <div class="logo-title-wrapper">
+            <img src="logo.italcol.png" alt="Italcol Logo" class="brand-logo">
+            <h2><span>Registro de Actividades VGR Italcol Los Patios S.A.S.</span></h2>
+        </div>
+        <button id="themeToggle" class="theme-toggle" title="Cambiar Tema">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+    
+    <form id="visitaForm" onsubmit="event.preventDefault();">
+        <div class="form-grid">
+            
+            <!-- Persona que realiza la visita -->
+            <div class="form-group">
+                <label for="persona"><i class="fa-solid fa-user-tie"></i> Persona que visita:</label>
+                <select id="persona" required>
+                    <option value="">Seleccione su nombre...</option>
+                    <option value="ALIED KARINA MENESES JAIMES">ALIED KARINA MENESES JAIMES</option>
+                    <option value="FRANKLIN ALEXIS CHACHON GELVEZ">FRANKLIN ALEXIS CHACHON GELVEZ</option>
+                    <option value="FREDDY ALFONSO CAICEDO JAIMES">FREDDY ALFONSO CAICEDO JAIMES</option>
+                    <option value="JULIAN ANDRES MOLINA MAYO">JULIAN ANDRES MOLINA MAYO</option>
+                    <option value="OSCAR ORLANDO CHONA VILLAMIZAR">OSCAR ORLANDO CHONA VILLAMIZAR</option>
+                    <option value="MIGUEL ANGEL RICO BALLESTEROS">MIGUEL ANGEL RICO BALLESTEROS</option>
+                    <option value="DIEGO ORLANDO ROA LANDAZABAL">DIEGO ORLANDO ROA LANDAZABAL</option>
+                    <option value="CARLOS FRANCISCO JÁCOME ORDOÑEZ">CARLOS FRANCISCO JÁCOME ORDOÑEZ</option>
+                </select>
+            </div>
+
+            <!-- Fecha -->
+            <div class="form-group">
+                <label for="fecha"><i class="fa-solid fa-calendar-day"></i> Fecha:</label>
+                <input type="date" id="fecha" required>
+            </div>
+
+            <!-- Lugar (Manual) -->
+            <div class="form-group">
+                <label for="lugar"><i class="fa-solid fa-location-dot"></i> Lugar:</label>
+                <input type="text" id="lugar" placeholder="Ej: Cúcuta, Neiva..." required>
+            </div>
+
+            <!-- Razón Social (Buscador y Selector Múltiple) -->
+            <div class="form-group full-width">
+                <label for="buscar_cliente"><i class="fa-solid fa-building"></i> Buscar y Añadir Clientes (Razón Social):</label>
+                <div class="search-add-group">
+                    <div class="searchable-select-wrapper" style="position: relative; flex: 1;">
+                        <input type="text" id="buscar_cliente" placeholder="Escribe para buscar cliente..." autocomplete="off" style="width: 100%;">
+                        <div id="buscar_cliente_options" class="search-options-dropdown"></div>
+                    </div>
+                    <button type="button" class="btn-add" id="btnAddCliente"><i class="fa-solid fa-plus"></i> Añadir</button>
+                </div>
+                <div class="help-text">Escribe para filtrar la lista, selecciona el cliente y presiona "Añadir". Puedes agregar varios.</div>
+            </div>
+
+            <!-- ¿Es un Cliente Prospecto? y Nombre de Cliente Prospecto -->
+            <div class="conditional-group" style="margin-top: 5px; margin-bottom: 5px;">
+                <div class="form-group">
+                    <label for="es_prospecto"><i class="fa-solid fa-circle-question"></i> ¿Es un Cliente Prospecto?</label>
+                    <select id="es_prospecto" required>
+                        <option value="No">No</option>
+                        <option value="Sí">Sí</option>
+                    </select>
+                </div>
+                <div class="form-group support-detail" id="prospecto_nombre_container">
+                    <label for="prospecto_nombre"><i class="fa-solid fa-user-plus"></i> Nombre Cliente Prospecto (Mayúsculas):</label>
+                    <div class="search-add-group">
+                        <input type="text" id="prospecto_nombre" placeholder="ESCRIBA EL NOMBRE DEL PROSPECTO..." style="text-transform: uppercase;">
+                        <button type="button" class="btn-add" id="btnAddProspecto"><i class="fa-solid fa-plus"></i> Añadir</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clientes Seleccionados (Tags) -->
+            <div class="form-group full-width">
+                <label><i class="fa-solid fa-tags"></i> Clientes seleccionados para este registro:</label>
+                <div id="clientes_tags" class="tags-container">
+                    <span style="color: var(--text-secondary); font-size: 14px; font-style: italic; padding: 4px 0;">Ningún cliente añadido aún</span>
+                </div>
+                <textarea id="razon_social" style="display:none;" required></textarea>
+            </div>
+
+            <!-- Gerente de Zona (Autocompletado) -->
+            <div class="form-group">
+                <label for="zona"><i class="fa-solid fa-map-location-dot"></i> Gerente de Zona:</label>
+                <input type="text" id="zona" placeholder="Se autocompleta según el cliente..." readonly>
+            </div>
+
+            <!-- Canal (Autocompletado / Editable) -->
+            <div class="form-group">
+                <label for="canal"><i class="fa-solid fa-network-wired"></i> Canal:</label>
+                <select id="canal" required>
+                    <option value="">Seleccione canal...</option>
+                    <option value="C01 - DIRECTOS">C01 - DIRECTOS</option>
+                    <option value="C02 - DISTRIBUIDORES">C02 - DISTRIBUIDORES</option>
+                    <option value="C03 - VINCULADOS">C03 - VINCULADOS</option>
+                </select>
+            </div>
+
+            <!-- Línea -->
+            <div class="form-group full-width">
+                <label for="linea"><i class="fa-solid fa-dna"></i> Línea:</label>
+                <select id="linea" required>
+                    <option value="">Seleccione la línea...</option>
+                    <option value="Todas las líneas">Todas las líneas</option>
+                    <option value="Porcicultura">Porcicultura</option>
+                    <option value="Acuicultura">Acuicultura</option>
+                    <option value="Equinos">Equinos</option>
+                    <option value="Pollo Engorde">Pollo Engorde</option>
+                    <option value="Postura">Postura</option>
+                    <option value="Mascotas">Mascotas</option>
+                    <option value="Ganadería">Ganadería</option>
+                    <option value="Sales">Sales</option>
+                </select>
+            </div>
+
+            <!-- Pilar -->
+            <div class="form-group">
+                <label for="pilar"><i class="fa-solid fa-circle-nodes"></i> Pilar:</label>
+                <select id="pilar" required>
+                    <option value="">Seleccione...</option>
+                    <option value="Competitiva">Competitiva</option>
+                    <option value="Servicio">Servicio</option>
+                    <option value="Aliado">Aliado</option>
+                </select>
+            </div>
+
+            <!-- Marca -->
+            <div class="form-group">
+                <label for="marca"><i class="fa-solid fa-trademark"></i> Marca / Tipo de Acción:</label>
+                <select id="marca" required>
+                    <option value="">Seleccione...</option>
+                    <option value="Servicio técnico">Servicio técnico</option>
+                    <option value="Comercial">Comercial</option>
+                    <option value="Formación">Formación</option>
+                    <option value="Capacitación">Capacitación</option>
+                    <option value="Mercadeo">Mercadeo</option>
+                    <option value="Sostenibilidad">Sostenibilidad</option>
+                </select>
+            </div>
+
+            <!-- Actividad -->
+            <div class="form-group full-width">
+                <label for="actividad"><i class="fa-solid fa-list-check"></i> Actividad:</label>
+                <select id="actividad" required>
+                    <option value="">Seleccione una actividad...</option>
+                    <option value="ACTIVACIONES LÍNEA">ACTIVACIONES LÍNEA</option>
+                    <option value="ACTIVIDAD COMERCIAL">ACTIVIDAD COMERCIAL</option>
+                    <option value="ANALISIS NIRS">ANALISIS NIRS</option>
+                    <option value="ANALISIS TÉCNICO-COMERCIAL">ANALISIS TÉCNICO-COMERCIAL</option>
+                    <option value="ANCHETA">ANCHETA</option>
+                    <option value="APP ZOOTECNICA">APP ZOOTECNICA</option>
+                    <option value="AQUAEXPERT INTERNACIONAL">AQUAEXPERT INTERNACIONAL</option>
+                    <option value="ARREGLO FACHADA">ARREGLO FACHADA</option>
+                    <option value="ASISTENCIA TÉCNICA">ASISTENCIA TÉCNICA</option>
+                    <option value="AVISO">AVISO</option>
+                    <option value="BROILER EXPERT">BROILER EXPERT</option>
+                    <option value="BUENA VISTA">BUENA VISTA</option>
+                    <option value="CABALGATA">CABALGATA</option>
+                    <option value="CALIDAD DE AGUA">CALIDAD DE AGUA</option>
+                    <option value="CALIPER">CALIPER</option>
+                    <option value="CAMPAMENTO VIRTUAL">CAMPAMENTO VIRTUAL</option>
+                    <option value="CAPACITACIÓN">CAPACITACIÓN</option>
+                    <option value="CEPI">CEPI</option>
+                    <option value="CERTIFICACIÓN">CERTIFICACIÓN</option>
+                    <option value="CHARLA">CHARLA</option>
+                    <option value="CLIENTE PROSPECTO">CLIENTE PROSPECTO</option>
+                    <option value="COMERCIALIZADOR">COMERCIALIZADOR</option>
+                    <option value="COMITÉ TECNICO">COMITÉ TECNICO</option>
+                    <option value="CONCURSO RIFAS">CONCURSO RIFAS</option>
+                    <option value="COSTOS EXPERT">COSTOS EXPERT</option>
+                    <option value="CRECIMIENTO CANAL DIRECTOS">CRECIMIENTO CANAL DIRECTOS</option>
+                    <option value="CREDITO GESTIÓN">CREDITO GESTIÓN</option>
+                    <option value="CURSO MAYORDOMIA">CURSO MAYORDOMIA</option>
+                    <option value="DESCUENTO COMERCIAL">DESCUENTO COMERCIAL</option>
+                    <option value="DÍA DE CAMPO">DÍA DE CAMPO</option>
+                    <option value="DÍA DE LA MASCOTA">DÍA DE LA MASCOTA</option>
+                    <option value="DÍA DE LA POLLITA">DÍA DE LA POLLITA</option>
+                    <option value="DÍA DEL ALEVINO">DÍA DEL ALEVINO</option>
+                    <option value="DIA DEL CERDITO">DIA DEL CERDITO</option>
+                    <option value="DIA DEL POLLITO">DIA DEL POLLITO</option>
+                    <option value="DOTACION CLIENTES">DOTACION CLIENTES</option>
+                    <option value="ECOGRAFIAS">ECOGRAFIAS</option>
+                    <option value="EGG EXPERT">EGG EXPERT</option>
+                    <option value="EVALUACION DE CANAL">EVALUACION DE CANAL</option>
+                    <option value="EVALUACION PIGMENTO">EVALUACION PIGMENTO</option>
+                    <option value="EXHIBICIÓN">EXHIBICIÓN</option>
+                    <option value="EXPERT REGIONAL">EXPERT REGIONAL</option>
+                    <option value="EXPORTACIÓN">EXPORTACIÓN</option>
+                    <option value="FENAVI">FENAVI</option>
+                    <option value="FENAVI BUCARAMANGA">FENAVI BUCARAMANGA</option>
+                    <option value="FERIA DE SERVICIOS">FERIA DE SERVICIOS</option>
+                    <option value="FERIAS Y EVENTOS">FERIAS Y EVENTOS</option>
+                    <option value="FIDELIZACIÓN">FIDELIZACIÓN</option>
+                    <option value="FIDELIZACIÓN CON EQUIPOS">FIDELIZACIÓN CON EQUIPOS</option>
+                    <option value="GESTIÓN CUPO CRÉDITO">GESTIÓN CUPO CRÉDITO</option>
+                    <option value="GIRA DE MOSTRADORES">GIRA DE MOSTRADORES</option>
+                    <option value="GIRA DE PRODUCTORES">GIRA DE PRODUCTORES</option>
+                    <option value="GIRA PRODUCTORES">GIRA PRODUCTORES</option>
+                    <option value="ITALPAY">ITALPAY</option>
+                    <option value="JORNADA ACUÍCOLA">JORNADA ACUÍCOLA</option>
+                    <option value="JORNADA BIENESTAR">JORNADA BIENESTAR</option>
+                    <option value="JORNADA DE DESPARÁSITACIÓN">JORNADA DE DESPARÁSITACIÓN</option>
+                    <option value="LABORATORIOS">LABORATORIOS</option>
+                    <option value="LANZAMIENTO">LANZAMIENTO</option>
+                    <option value="LETRERO">LETRERO</option>
+                    <option value="LIQUIDACION LOTES">LIQUIDACION LOTES</option>
+                    <option value="MEDICACIÓN ESTRATEGICA">MEDICACIÓN ESTRATEGICA</option>
+                    <option value="mes italsal">mes italsal</option>
+                    <option value="MUESTRA COMERCIAL">MUESTRA COMERCIAL</option>
+                    <option value="PCR">PCR</option>
+                    <option value="PESAJE">PESAJE</option>
+                    <option value="PLAN NACIONAL SANIDAD">PLAN NACIONAL SANIDAD</option>
+                    <option value="PLAN SEMILLA">PLAN SEMILLA</option>
+                    <option value="PORCIGENES">PORCIGENES</option>
+                    <option value="PLAN ALIMENTACIÓN">PLAN ALIMENTACIÓN</option>
+                    <option value="PROGRAMACIÓN LEVANTE, PLAN ALIMENTACIÓN, MANEJO Y PLAN VACUNAL.">PROGRAMACIÓN LEVANTE, PLAN ALIMENTACIÓN, MANEJO Y PLAN VACUNAL.</option>
+                    <option value="PROSPECTO">PROSPECTO</option>
+                    <option value="PUBLICIDAD">PUBLICIDAD</option>
+                    <option value="QUEJAS">QUEJAS</option>
+                    <option value="RECEPCIÓN DE POLLITAS">RECEPCIÓN DE POLLITAS</option>
+                    <option value="RELANZAMIENTO">RELANZAMIENTO</option>
+                    <option value="REVISIÓN RESULTADOS LEVANTE, RENDIMIENTO POLLITAS">REVISIÓN RESULTADOS LEVANTE, RENDIMIENTO POLLITAS</option>
+                    <option value="RIFA">RIFA</option>
+                    <option value="RUTA ESPECIALIZADA">RUTA ESPECIALIZADA</option>
+                    <option value="SANIDAD">SANIDAD</option>
+                    <option value="SEMINARIO">SEMINARIO</option>
+                    <option value="SEÑALIZACIÓN ICA">SEÑALIZACIÓN ICA</option>
+                    <option value="TALLER">TALLER</option>
+                    <option value="TALLER DE INSEMINACIÓN">TALLER DE INSEMINACIÓN</option>
+                    <option value="TALLER EMBUTIDOS">TALLER EMBUTIDOS</option>
+                    <option value="TELEMETRIA">TELEMETRIA</option>
+                    <option value="TOMA DE ALMACEN">TOMA DE ALMACEN</option>
+                    <option value="VACUNACION">VACUNACION</option>
+                    <option value="VECINO SOSTENIBLE">VECINO SOSTENIBLE</option>
+                    <option value="VISITA COMERCIAL">VISITA COMERCIAL</option>
+                    <option value="VISITA DE TRANSFERENCIA">VISITA DE TRANSFERENCIA</option>
+                    <option value="VISITA DIR LINEA">VISITA DIR LINEA</option>
+                    <option value="PLAN VITAMINIZACIÓN">PLAN VITAMINIZACIÓN</option>
+                    <option value="TALLER DE DESPOSTE">TALLER DE DESPOSTE</option>
+                </select>
+            </div>
+
+            <!-- Observaciones (Manual) -->
+            <div class="form-group full-width">
+                <label for="observaciones"><i class="fa-solid fa-comment-dots"></i> Observaciones:</label>
+                <textarea id="observaciones" placeholder="Describe los logros, compromisos o detalles de la visita comercial..." required></textarea>
+            </div>
+
+            <!-- Evidencia Fotográfica -->
+            <div class="form-group full-width">
+                <label for="foto_evidencia"><i class="fa-solid fa-camera"></i> Evidencia Fotográfica:</label>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="foto_evidencia" accept="image/*" style="display: none;">
+                    <button type="button" class="btn-file-trigger" onclick="document.getElementById('foto_evidencia').click();">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Seleccionar o Tomar Foto
+                    </button>
+                    <span id="file_name_text" class="help-text" style="margin-left: 10px;">Ningún archivo seleccionado</span>
+                </div>
+                <div id="image_preview_container" class="image-preview-container" style="display: none; margin-top: 15px; position: relative;">
+                    <img id="image_preview" src="" alt="Vista previa de evidencia" style="max-width: 100%; max-height: 250px; border-radius: 10px; border: 1.5px solid var(--input-border); object-fit: contain;">
+                    <button type="button" id="btnRemoveFoto" class="btn-remove-foto" title="Remover Foto">&times;</button>
+                </div>
+            </div>
+
+            <!-- Sección de Apoyos (Condicionales Premium) -->
+            <div class="conditional-group">
+                <!-- Apoyo Aliado -->
+                <div class="form-group">
+                    <label for="apoyo_aliado"><i class="fa-solid fa-handshake"></i> ¿Apoyo aliado?</label>
+                    <select id="apoyo_aliado" required>
+                        <option value="No">No</option>
+                        <option value="Sí">Sí</option>
+                    </select>
+                    <div id="aliado_quien_container" class="support-detail">
+                        <input type="text" id="apoyo_aliado_quien" placeholder="¿Quién apoyó? (Nombre)">
+                    </div>
+                </div>
+
+                <!-- Apoyo Especialista -->
+                <div class="form-group">
+                    <label for="apoyo_especialista"><i class="fa-solid fa-user-gear"></i> ¿Apoyo especialista?</label>
+                    <select id="apoyo_especialista" required>
+                        <option value="No">No</option>
+                        <option value="Sí">Sí</option>
+                    </select>
+                    <div id="especialista_quien_container" class="support-detail">
+                        <input type="text" id="apoyo_especialista_quien" placeholder="¿Quién apoyó? (Nombre)">
+                    </div>
+                </div>
+
+                <!-- Apoyo Gerente de Zona -->
+                <div class="form-group full-width">
+                    <label for="apoyo_gerente_zona"><i class="fa-solid fa-user-tie"></i> ¿Apoyo Gerente de Zona?</label>
+                    <select id="apoyo_gerente_zona" required>
+                        <option value="No">No</option>
+                        <option value="Sí">Sí</option>
+                    </select>
+                    <div id="gerente_quien_container" class="support-detail">
+                        <select id="apoyo_gerente_zona_quien">
+                            <option value="">-- Selecciona el Gerente de Zona --</option>
+                            <option value="JULIAN ANDRES MOLINA MAYO">JULIAN ANDRES MOLINA MAYO</option>
+                            <option value="OSCAR ORLANDO CHONA VILLAMIZAR">OSCAR ORLANDO CHONA VILLAMIZAR</option>
+                            <option value="MIGUEL ANGEL RICO BALLESTEROS">MIGUEL ANGEL RICO BALLESTEROS</option>
+                            <option value="DIEGO ORLANDO ROA LANDAZABAL">DIEGO ORLANDO ROA LANDAZABAL</option>
+                            <option value="CARLOS FRANCISCO JÁCOME ORDOÑEZ">CARLOS FRANCISCO JÁCOME ORDOÑEZ</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ¿La actividad tuvo alguna asignación económica? y Gasto/Costo -->
+            <div class="conditional-group" style="margin-top: 15px; margin-bottom: 15px;">
+                <div class="form-group">
+                    <label for="asignacion_economica"><i class="fa-solid fa-comments-dollar"></i> ¿Asignación económica?</label>
+                    <select id="asignacion_economica" required>
+                        <option value="No">No</option>
+                        <option value="Sí">Sí</option>
+                    </select>
+                </div>
+                <div class="form-group support-detail" id="gasto_costo_container">
+                    <label for="gasto_costo"><i class="fa-solid fa-money-bill-wave"></i> Gasto / Costo (COP):</label>
+                    <input type="text" id="gasto_costo" placeholder="Ej: $ 50.000">
+                </div>
+            </div>
+
+            <!-- Botones de Acción -->
+            <div class="button-group">
+                <button type="button" class="action-btn btn-whatsapp" id="btnWhatsApp"><i class="fa-brands fa-whatsapp"></i> Enviar a WhatsApp</button>
+                <button type="button" class="action-btn btn-save" id="btnGuardar"><i class="fa-solid fa-cloud-arrow-up"></i> Guardar en Sheets</button>
+            </div>
+
+
+            
+        </div>
+    </form>
+</div>
+
+<!-- Toast Notifications -->
+<div id="toast" class="toast">
+    <span id="toastIcon"></span>
+    <span id="toastMessage"></span>
+</div>
+
+<!-- Scripts -->
+<script src="clientes.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
