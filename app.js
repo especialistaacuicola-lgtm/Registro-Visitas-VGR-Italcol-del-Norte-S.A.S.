@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const optionsContainer = document.getElementById('buscar_cliente_options');
     const sortedClientes = [...clientesDB].sort((a, b) => a.razon.localeCompare(b.razon));
 
-    // Populate searchable select options list
+    // Populate searchable select options list for Clients
     function renderOptions(filterText = '') {
         optionsContainer.innerHTML = '';
         const filtered = sortedClientes.filter(c => 
@@ -76,10 +76,77 @@ document.addEventListener('DOMContentLoaded', () => {
         optionsContainer.classList.add('show');
     });
 
+    // Activities Database
+    const actividadesDB = [
+        "ACTIVACIONES LÍNEA", "ACTIVIDAD COMERCIAL", "ANALISIS NIRS", "ANALISIS TÉCNICO-COMERCIAL", "ANCHETA",
+        "APP ZOOTECNICA", "AQUAEXPERT INTERNACIONAL", "ARREGLO FACHADA", "ASISTENCIA TÉCNICA", "AVISO",
+        "BROILER EXPERT", "BUENA VISTA", "CABALGATA", "CALIDAD DE AGUA", "CALIPER", "CAMPAMENTO VIRTUAL",
+        "CAPACITACIÓN", "CEPI", "CERTIFICACIÓN", "CHARLA", "CLIENTE PROSPECTO", "COMERCIALIZADOR",
+        "COMITÉ TECNICO", "CONCURSO RIFAS", "COSTOS EXPERT", "CRECIMIENTO CANAL DIRECTOS", "CREDITO GESTIÓN",
+        "CURSO MAYORDOMIA", "DESCUENTO COMERCIAL", "DÍA DE CAMPO", "DÍA DE LA MASCOTA", "DÍA DE LA POLLITA",
+        "DÍA DEL ALEVINO", "DIA DEL CERDITO", "DIA DEL POLLITO", "DOTACION CLIENTES", "ECOGRAFIAS",
+        "EGG EXPERT", "EVALUACION DE CANAL", "EVALUACION PIGMENTO", "EXHIBICIÓN", "EXPERT REGIONAL",
+        "EXPORTACIÓN", "FENAVI", "FENAVI BUCARAMANGA", "FERIA DE SERVICIOS", "FERIAS Y EVENTOS",
+        "FIDELIZACIÓN", "FIDELIZACIÓN CON EQUIPOS", "GESTIÓN CUPO CRÉDITO", "GIRA DE MOSTRADORES",
+        "GIRA DE PRODUCTORES", "GIRA PRODUCTORES", "ITALPAY", "JORNADA ACUÍCOLA", "JORNADA BIENESTAR",
+        "JORNADA DE DESPARÁSITACIÓN", "LABORATORIOS", "LANZAMIENTO", "LETRERO", "LIQUIDACION LOTES",
+        "MEDICACIÓN ESTRATEGICA", "mes italsal", "MUESTRA COMERCIAL", "PCR", "PESAJE", "PLAN NACIONAL SANIDAD",
+        "PLAN SEMILLA", "PORCIGENES", "PLAN ALIMENTACIÓN", "PROGRAMACIÓN LEVANTE, PLAN ALIMENTACIÓN, MANEJO Y PLAN VACUNAL.",
+        "PROSPECTO", "PUBLICIDAD", "QUEJAS", "RECEPCIÓN DE POLLITAS", "RELANZAMIENTO",
+        "REVISIÓN RESULTADOS LEVANTE, RENDIMIENTO POLLITAS", "RIFA", "RUTA ESPECIALIZADA", "SANIDAD",
+        "SEMINARIO", "SEÑALIZACIÓN ICA", "TALLER", "TALLER DE INSEMINACIÓN", "TALLER EMBUTIDOS",
+        "TELEMETRIA", "TOMA DE ALMACEN", "VACUNACION", "VECINO SOSTENIBLE", "VISITA COMERCIAL",
+        "VISITA DE TRANSFERENCIA", "VISITA DIR LINEA", "PLAN VITAMINIZACIÓN", "TALLER DE DESPOSTE"
+    ].sort();
+
+    // Searchable Activity Dropdown implementation
+    const inputActividad = document.getElementById('actividad');
+    const optionsActividadContainer = document.getElementById('actividad_options');
+
+    // Populate searchable select options list for Activities
+    function renderActividadOptions(filterText = '') {
+        optionsActividadContainer.innerHTML = '';
+        const filtered = actividadesDB.filter(act => 
+            act.toLowerCase().includes(filterText.toLowerCase())
+        );
+
+        if (filtered.length === 0) {
+            const emptyOption = document.createElement('div');
+            emptyOption.className = 'search-option no-results';
+            emptyOption.textContent = 'Sin resultados';
+            optionsActividadContainer.appendChild(emptyOption);
+            return;
+        }
+
+        filtered.forEach(act => {
+            const option = document.createElement('div');
+            option.className = 'search-option';
+            option.textContent = act;
+            option.addEventListener('click', () => {
+                inputActividad.value = act;
+                optionsActividadContainer.classList.remove('show');
+            });
+            optionsActividadContainer.appendChild(option);
+        });
+    }
+
+    // Toggle dropdown on input focus
+    inputActividad.addEventListener('focus', () => {
+        renderActividadOptions(inputActividad.value);
+        optionsActividadContainer.classList.add('show');
+    });
+
+    // Filter list on typing
+    inputActividad.addEventListener('input', () => {
+        renderActividadOptions(inputActividad.value);
+        optionsActividadContainer.classList.add('show');
+    });
+
     // Close dropdown on click outside
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.searchable-select-wrapper')) {
             optionsContainer.classList.remove('show');
+            optionsActividadContainer.classList.remove('show');
         }
     });
 
