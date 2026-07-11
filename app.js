@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ].sort();
 
     // Searchable Activity Dropdown implementation
-    const inputActividad = document.getElementById('actividad');
+    const inputActividad = document.getElementById('buscar_actividad');
     const optionsActividadContainer = document.getElementById('actividad_options');
 
     // Populate searchable select options list for Activities (max 15 results for performance)
@@ -147,6 +147,71 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!e.target.closest('.searchable-select-wrapper')) {
             optionsContainer.classList.remove('show');
             optionsActividadContainer.classList.remove('show');
+        }
+    });
+
+    // Multiselect Activity Logic
+    const selectedActivities = [];
+    const btnAddActividad = document.getElementById('btnAddActividad');
+    const actividadesTagsContainer = document.getElementById('actividades_tags');
+    const textActividad = document.getElementById('actividad'); // Hidden textarea
+
+    const updateActivityMetadata = () => {
+        if (selectedActivities.length === 0) {
+            actividadesTagsContainer.innerHTML = `<span style="color: var(--text-secondary); font-size: 14px; font-style: italic; padding: 4px 0;">Ninguna actividad añadida aún</span>`;
+            textActividad.value = '';
+            return;
+        }
+
+        // Render Tags
+        actividadesTagsContainer.innerHTML = '';
+        selectedActivities.forEach((actName, index) => {
+            const tag = document.createElement('div');
+            tag.className = 'client-tag'; // Reuse styling
+            tag.innerHTML = `
+                <span>${actName}</span>
+                <button type="button" class="btn-remove-act" data-index="${index}">&times;</button>
+            `;
+            actividadesTagsContainer.appendChild(tag);
+        });
+
+        // Set hidden textarea value for submission and WhatsApp extraction
+        textActividad.value = selectedActivities.join(', ');
+    };
+
+    // Add Activity Event
+    btnAddActividad.addEventListener('click', () => {
+        const actVal = inputActividad.value.trim();
+        if (!actVal) {
+            showToast('Por favor, selecciona una actividad primero.', 'error');
+            return;
+        }
+
+        // Validate selection from list
+        const exists = actividadesDB.includes(actVal);
+        if (!exists) {
+            showToast('Actividad no encontrada en la lista oficial.', 'error');
+            return;
+        }
+
+        if (selectedActivities.includes(actVal)) {
+            showToast('Esta actividad ya ha sido añadida.', 'error');
+            return;
+        }
+
+        selectedActivities.push(actVal);
+        updateActivityMetadata();
+        inputActividad.value = ''; // Clear search input
+        showToast('Actividad añadida.', 'success');
+    });
+
+    // Remove Activity Tag Event
+    actividadesTagsContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-remove-act')) {
+            const index = parseInt(e.target.getAttribute('data-index'), 10);
+            selectedActivities.splice(index, 1);
+            updateActivityMetadata();
+            showToast('Actividad removida.', 'success');
         }
     });
 
@@ -489,6 +554,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(c => `• ${c.trim()}`)
             .join('\n');
 
+        // Las actividades van como lista con viñetas (• )
+        const actividadesLista = data.actividad
+            .split(',')
+            .map(a => `• ${a.trim()}`)
+            .join('\n');
+
         // Sin nombre de quien realiza la visita
         let txt = `Fecha: ${fechaFormateada}\n\n`;
         txt += `Lugar: ${data.lugar}\n\n`;
@@ -498,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
         txt += `Razon social:\n\n${clientesLista}\n\n`;
         txt += `Pilar: ${data.pilar}\n\n`;
         txt += `Marca: ${data.marca}\n\n`;
-        txt += `Actividad: ${data.actividad}\n\n`;
+        txt += `Actividades:\n\n${actividadesLista}\n\n`;
         txt += `Observaciones: ${data.observaciones}\n\n`;
 
         if (data.apoyo_aliado === 'Sí') txt += `Apoyo aliado: ${data.apoyo_aliado_quien}\n\n`;
@@ -576,13 +647,15 @@ document.addEventListener('DOMContentLoaded', () => {
             selectedClients.length = 0;
             updateClientMetadata();
             inputBuscarCliente.value = '';
+            selectedActivities.length = 0;
+            updateActivityMetadata();
+            inputActividad.value = '';
             selectEsProspecto.value = 'No';
             selectEsProspecto.dispatchEvent(new Event('change'));
             document.getElementById('pilar').value = '';
             document.getElementById('marca').value = '';
             document.getElementById('linea').value = '';
             document.getElementById('observaciones').value = '';
-            selectActividad.value = '';
 
             // Clean photo input
             inputFoto.value = '';

@@ -152,14 +152,27 @@
                 </select>
             </div>
 
-            <!-- Actividad -->
+            <!-- Actividad (Buscador y Selector Múltiple) -->
             <div class="form-group full-width">
-                <label for="actividad"><i class="fa-solid fa-list-check"></i> Actividad:</label>
-                <div class="searchable-select-wrapper" style="position: relative; width: 100%;">
-                    <input type="text" id="actividad" placeholder="Escribe para buscar actividad..." autocomplete="off" required style="width: 100%; padding-right: 35px;">
-                    <i class="fa-solid fa-chevron-down select-arrow" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none; font-size: 12px;"></i>
-                    <div id="actividad_options" class="search-options-dropdown"></div>
+                <label for="buscar_actividad"><i class="fa-solid fa-list-check"></i> Buscar y Añadir Actividades:</label>
+                <div class="search-add-group">
+                    <div class="searchable-select-wrapper" style="position: relative; flex: 1;">
+                        <input type="text" id="buscar_actividad" placeholder="Escribe para buscar actividad..." autocomplete="off" style="width: 100%; padding-right: 35px;">
+                        <i class="fa-solid fa-chevron-down select-arrow" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--text-secondary); pointer-events: none; font-size: 12px;"></i>
+                        <div id="actividad_options" class="search-options-dropdown"></div>
+                    </div>
+                    <button type="button" class="btn-add" id="btnAddActividad"><i class="fa-solid fa-plus"></i> Añadir</button>
                 </div>
+                <div class="help-text">Escribe para filtrar la lista, selecciona la actividad y presiona "Añadir". Puedes agregar varias.</div>
+            </div>
+
+            <!-- Actividades Seleccionadas (Tags) -->
+            <div class="form-group full-width">
+                <label><i class="fa-solid fa-tags"></i> Actividades seleccionadas para este registro:</label>
+                <div id="actividades_tags" class="tags-container">
+                    <span style="color: var(--text-secondary); font-size: 14px; font-style: italic; padding: 4px 0;">Ninguna actividad añadida aún</span>
+                </div>
+                <textarea id="actividad" style="display:none;" required></textarea>
             </div>
 
             <!-- Observaciones (Manual) -->
