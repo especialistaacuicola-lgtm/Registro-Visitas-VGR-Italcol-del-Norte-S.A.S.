@@ -37,12 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const optionsContainer = document.getElementById('buscar_cliente_options');
     const sortedClientes = [...clientesDB].sort((a, b) => a.razon.localeCompare(b.razon));
 
-    // Populate searchable select options list for Clients
+    // Populate searchable select options list for Clients (max 15 results for performance)
     function renderOptions(filterText = '') {
         optionsContainer.innerHTML = '';
         const filtered = sortedClientes.filter(c => 
             c.razon.toLowerCase().includes(filterText.toLowerCase())
-        );
+        ).slice(0, 15);
 
         if (filtered.length === 0) {
             const emptyOption = document.createElement('div');
@@ -103,12 +103,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputActividad = document.getElementById('actividad');
     const optionsActividadContainer = document.getElementById('actividad_options');
 
-    // Populate searchable select options list for Activities
+    // Populate searchable select options list for Activities (max 15 results for performance)
     function renderActividadOptions(filterText = '') {
         optionsActividadContainer.innerHTML = '';
         const filtered = actividadesDB.filter(act => 
             act.toLowerCase().includes(filterText.toLowerCase())
-        );
+        ).slice(0, 15);
 
         if (filtered.length === 0) {
             const emptyOption = document.createElement('div');
