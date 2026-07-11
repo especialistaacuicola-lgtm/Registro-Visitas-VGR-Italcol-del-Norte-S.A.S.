@@ -1,5 +1,5 @@
 const clientesDB = [
-  { razon: "VGR Italcol del Norte S.A.S.", gerente: "", canal: "" },
+  { razon: "VGR Italcol del Norte S.A.S.", gerente: "Todos", canal: "Todos" },
   { razon: "AGRICOLA SURTICAMPO S.A.S.", gerente: "MOLINA MAYO JULIAN ANDRES", canal: "C02 - DISTRIBUIDORES" },
   { razon: "AGROAVICOLA SAN MARINO S A", gerente: "MOLINA MAYO JULIAN ANDRES", canal: "C03 - VINCULADOS" },
   { razon: "AGROLUA S.A.S.", gerente: "RICO BALLESTEROS MIGUEL ANGEL", canal: "C01 - DIRECTOS" },
